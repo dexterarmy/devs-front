@@ -27,23 +27,76 @@ interface TabComponents {
     [key: string]: any;
 }
 
+const compareArrayForEquality = (arr1:string[] , arr2:string[]) => {
+
+    if(arr1.join('') === arr2.join('')){
+        return true;
+    }
+
+    return false;
+
+}
+
+const updateBreadcrumbArr = (orgArr:string[] , toCheckArr:string[]):string[] => {
+
+ 
+    if(orgArr.length === 0){
+        return toCheckArr;
+    }
+
+        if(orgArr[orgArr.length - 1] === toCheckArr[toCheckArr.length - 1]){
+            let takeOutElementsFromOrgArrayForEquality = [];
+            for(let j = 0 ; j < toCheckArr.length ; j++){
+                takeOutElementsFromOrgArrayForEquality.push(orgArr[(orgArr.length - 1) - j]);
+
+            }
+           const ifTrue =  compareArrayForEquality(toCheckArr , takeOutElementsFromOrgArrayForEquality);
+           if(ifTrue){
+            return orgArr;
+           }
+        }
+
+        orgArr.pop();
+        return updateBreadcrumbArr(orgArr , toCheckArr);
+}
+
+
 const Breadcrumbs = () => {
 
     const [breadcrumbArr , setBreadcrumbArr] = useState<any>(new Set(['home']));
     const [selectedBreadCrumb , setSelectedBreadcrumb] = useState<string>('home');
 
-    const manageBreadCrumbs = (comp : string) => {
+    const manageBreadCrumbs = (comp : string, previousComps:string[]) => {
 
         setSelectedBreadcrumb(() => {
             setBreadcrumbArr((arr:any) => {
                 const newArr = arr;
-                newArr.add(comp);
-                return newArr;
+                if(comp === 'home'){
+                    newArr.clear();
+                    newArr.add(comp);
+                    return newArr ;
+                }
+                const updatedBreadCrumbArray = [...updateBreadcrumbArr(Array.from(newArr), Array.from(previousComps)), comp];
+                const updatedBreadCrumbSet = new Set(updatedBreadCrumbArray);
+                return updatedBreadCrumbSet;
             })
 
             return comp;
            
         })
+
+    }
+
+    const handleBreadcrumbClick = (data:string, bArr: string[]):any => {
+
+        if(data === bArr[bArr.length - 1]){
+            setBreadcrumbArr(bArr);
+            setSelectedBreadcrumb(data);
+            return 1;
+        }
+
+        bArr.pop();
+        return handleBreadcrumbClick(data, bArr);
 
     }
 
@@ -60,7 +113,7 @@ const Breadcrumbs = () => {
         {
            Array.from(breadcrumbArr).map((data:any) => {
             return (
-                <a onClick={() => { }}>{data}/</a>
+                <a onClick={() => {handleBreadcrumbClick(data, Array.from(breadcrumbArr))} }>{data}/</a>
             )
 
            })
@@ -79,7 +132,7 @@ const Home = ({manageBreadCrumbs}:any) => {
     return (
         <>
         <h1>Home</h1>
-        <button onClick={() => {manageBreadCrumbs('Tab1')}} >go to tab1</button>
+        <button onClick={() => {manageBreadCrumbs('Tab1',['home'])}} >go to tab1</button>
         </>
     )
 }
@@ -88,7 +141,7 @@ const Tab1 = ({manageBreadCrumbs}:any) => {
     return (
     <>
     <h1>tab1</h1>
-    <button onClick={() => {manageBreadCrumbs('Tab2')}} >go to tab1</button>
+    <button onClick={() => {manageBreadCrumbs('Tab2',['home','Tab1'])}} >go to tab2</button>
     </>
     )
 }
@@ -97,7 +150,7 @@ const Tab2 = ({manageBreadCrumbs}:any) => {
     return (
     <>
     <h1>tab2</h1>
-    <button onClick={() => {manageBreadCrumbs('home')}} >go to home</button>
+    <button onClick={() => {manageBreadCrumbs('home',[])}} >go to home</button>
     </>
     )
 }
