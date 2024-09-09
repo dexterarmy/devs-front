@@ -55,3 +55,20 @@
   display: flex;
   flex-direction: column;
 }
+
+/* dynamic window resizer */
+
+.container {
+  display: block;
+  width: 1000px;
+  height : 500px;
+  border: 5px solid black;
+}
+
+@media (min-width : 600px) {
+
+  .container {
+    background-color: green;
+  }
+  
+}
