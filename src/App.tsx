@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, FC } from 'react';
-import DragAndDrop from './components/DragAndDrop';
+import Container from './components/Button';
 
 
 import './App.css';
@@ -8,7 +8,7 @@ function App() {
 
   return (
     <>
-     <DragAndDrop/>
+     <Container/>
     </>
   );
 
