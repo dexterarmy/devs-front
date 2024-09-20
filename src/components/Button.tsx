@@ -20,11 +20,13 @@ const Container = () => {
 
 
 return(
-  <Wrapper>
-    <Title>
+  <div>
+    {/* <Title>
       Hello World!
-    </Title>
-  </Wrapper>
+    </Title> */}
+
+    hi
+  </div>
 );
 }
 

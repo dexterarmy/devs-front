@@ -1,18 +1,26 @@
-import React, { useEffect, useState, useRef, FC } from 'react';
-import Container from './components/Button';
+// src/components/UserList.tsx
+import React from 'react';
+import { useGetUsersQuery } from './Redux/reducer';
 
+const UserList: React.FC = () => {
+  // Fetch the user data using the hook
+  const { data: users, error, isLoading } = useGetUsersQuery();
 
-import './App.css';
-
-function App() {
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading users!</div>;
 
   return (
-    <>
-     <Container/>
-    </>
+    <div>
+      <h2>User List</h2>
+      <ul>
+        {users?.map((user) => (
+          <li key={user.id}>
+            {user.name} - {user.email} - {user.phone}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
+};
 
-
-}
-
-export default App;
+export default UserList;
